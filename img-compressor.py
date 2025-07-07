@@ -1,25 +1,55 @@
 from PIL import Image
 import os
 
-# set the desired size of the compressed image in bytes
-target_size = 15 * 1024 * 1024  # 64 MB
+# Define input and output paths
+input_dir = r"C:\Users\David\Downloads\WhatsApp Unknown 2025-06-20 at 10.00.07"
+output_dir = os.path.join(input_dir, "compressed_pdfs")
+output_pdf = os.path.join(output_dir, "all_images_compressed.pdf")
 
-path = "C:/Users/David/Desktop/Harta-CNIS.png"
-# load the PNG image
-img = Image.open(path)
+# Create output directory if needed
+os.makedirs(output_dir, exist_ok=True)
 
-# get the current size of the image
-current_size = os.path.getsize(path)
+# Allowed image extensions
+image_extensions = ('.jpg', '.jpeg', '.png')
 
-# calculate the compression ratio required to achieve the target size
-compression_ratio = (target_size / current_size) ** 0.5
+# Resize factor (adjust for more or less compression)
+resize_factor = 0.8
+# Store processed images for PDF
+pdf_images = []
 
-# resize the image using the compression ratio
-new_size = (int(img.size[0] * compression_ratio), int(img.size[1] * compression_ratio))
-img = img.resize(new_size, Image.LANCZOS)
+# Go through each image in the folder
+for filename in sorted(os.listdir(input_dir)):
+    if filename.lower().endswith(image_extensions):
+        try:
+            path = os.path.join(input_dir, filename)
+            img = Image.open(path)
 
-# save the compressed image as a PNG file
-img.save("C:/Users/David/Desktop/output_image.png", format="PNG")
+            # Convert to RGB
+            if img.mode != "RGB":
+                img = img.convert("RGB")
 
-# print the new size of the compressed image
-print(f"Compressed image size: {os.path.getsize('C:/Users/David/Desktop/output_image.png') / (1024 * 1024)} MB")
+            # Resize for compression
+            new_size = (int(img.width * resize_factor), int(img.height * resize_factor))
+            img = img.resize(new_size, Image.LANCZOS)
+
+            # Append to list
+            pdf_images.append(img)
+
+            print(f"Added: {filename}")
+
+        except Exception as e:
+            print(f"Error processing {filename}: {e}")
+
+# Save all images to one PDF
+if pdf_images:
+    pdf_images[0].save(
+        output_pdf,
+        save_all=True,
+        append_images=pdf_images[1:],
+        format="PDF",
+        optimize=True
+    )
+    size_mb = os.path.getsize(output_pdf) / (1024 * 1024)
+    print(f"\n✅ All images saved to one PDF: {output_pdf} ({size_mb:.2f} MB)")
+else:
+    print("❌ No valid images found.")

@@ -49,7 +49,7 @@ def convert_and_remove_duplicates(input_dir, output_dir):
         print(f"done image {filename} Total done: {i}")
 
 # Example usage:
-input_directory = 'E:\wetransfer_4-rar_2023-05-12_0741\shp'
+input_directory = 'C:\Users\sdavi\OneDrive\Desktop\ppp'
 output_directory = 'E:\wetransfer_4-rar_2023-05-12_0741\shp'
 
 convert_and_remove_duplicates(input_directory, output_directory)
