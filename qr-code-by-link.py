@@ -2,7 +2,7 @@ import qrcode
 from PIL import Image, ImageDraw
 
 # Define the website and logo file paths
-website_url = "https://caiacsmile.galantom.ro/fundraising_pages/view?id=33674&organization_subdomain=caiacsmile"
+website_url = ""
 square_size = 0
 
 # Generate the QR code
